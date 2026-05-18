@@ -1,0 +1,270 @@
+@import "tailwindcss";
+
+/* Make Tailwind's `dark:` variant class-based (driven by next-themes adding `.dark` to <html>)
+   instead of the default `prefers-color-scheme` media query. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ============================================================
+   Design tokens
+   Palette: Graphite + Coral
+   Typography: Inter (sans) + Instrument Serif (italic accents)
+   ============================================================ */
+
+:root {
+  /* Base */
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+
+  /* Surfaces */
+  --surface: #fafafa;
+  --surface-elevated: #f5f5f5;
+  --border: #e5e5e5;
+  --border-strong: #d4d4d4;
+
+  /* Text */
+  --muted: #525252;
+  --subtle: #737373;
+
+  /* Brand */
+  --primary: #171717;
+  --primary-foreground: #fafafa;
+  --accent: #ef4444;
+  --accent-soft: #fee2e2;
+  --accent-foreground: #ffffff;
+
+  /* Status */
+  --success: #16a34a;
+  --warning: #f59e0b;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 200ms;
+  --duration-base: 400ms;
+  --duration-slow: 600ms;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+
+  --surface: #111111;
+  --surface-elevated: #171717;
+  --border: #262626;
+  --border-strong: #404040;
+
+  --muted: #a3a3a3;
+  --subtle: #737373;
+
+  --primary: #fafafa;
+  --primary-foreground: #0a0a0a;
+  --accent: #f87171;
+  --accent-soft: #450a0a;
+  --accent-foreground: #0a0a0a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-instrument-serif);
+  --font-mono: var(--font-geist-mono);
+  --font-dev: var(--font-noto-dev);
+}
+
+/* ============================================================
+   Base layer
+   ============================================================ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-feature-settings: "cv11", "ss01", "ss03";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* Hide scrollbar on horizontal scroll containers (marquees) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ============================================================
+   Marquee animation (logo stripe)
+   ============================================================ */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* ============================================================
+   Reveal animation utility (used for sections without Framer)
+   ============================================================ */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s var(--ease-out) both;
+}
+
+/* ============================================================
+   Service hero motion overlays (subtle, alive-but-calm)
+   ============================================================ */
+
+/* Particle drifts upward with slight horizontal motion + fade */
+@keyframes particle-drift {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--particle-opacity, 0.4);
+  }
+  90% {
+    opacity: var(--particle-opacity, 0.4);
+  }
+  100% {
+    transform: translate(var(--particle-x, 20px), -80vh);
+    opacity: 0;
+  }
+}
+
+/* Pulsing radial glow ring */
+@keyframes glow-pulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(0.7);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.25);
+    opacity: 0.5;
+  }
+}
+
+/* Horizontal scan-line sweep top to bottom */
+@keyframes scan-sweep {
+  0% {
+    transform: translateY(-10%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.5;
+  }
+  90% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(70vh);
+    opacity: 0;
+  }
+}
+
+/* Continuous ring rotation */
+@keyframes ring-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* SVG dash flow along path */
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -1200;
+  }
+}
+
+/* Orbital rotation for skill orbits */
+@keyframes orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Typewriter cursor blink for Now section */
+@keyframes cursor-blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .service-motion-layer,
+  .service-motion-layer * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ============================================================
+   Grid backdrop utility (subtle background grid)
+   ============================================================ */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, var(--border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.bg-grid-fade {
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+
+/* ============================================================
+   Focus ring
+   ============================================================ */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
