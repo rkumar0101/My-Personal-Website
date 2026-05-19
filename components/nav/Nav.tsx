@@ -230,7 +230,7 @@ export function Nav() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="fixed inset-0 z-[60] bg-background md:hidden">
+        <div className="fixed inset-0 z-[60] bg-white dark:bg-[#0a0a0a] md:hidden">
           <div className="flex h-16 items-center justify-between px-4">
             <Link
               href="/"
