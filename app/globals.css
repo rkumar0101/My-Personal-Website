@@ -237,6 +237,13 @@ body {
   }
 }
 
+/* Diagonal stripe scroll for construction pages */
+@keyframes stripe-scroll {
+  to {
+    background-position: 280px 0;
+  }
+}
+
 /* Respect users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .service-motion-layer,
