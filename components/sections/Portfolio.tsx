@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { ArrowUpRight, ArrowRight, PenTool, Code2 } from "lucide-react";
@@ -250,16 +251,32 @@ function WritingCard({ item }: { item: PortfolioItem }) {
 }
 
 // =============================================================
-// Web card
+// Web card (with auto-rotating screenshot slideshow when images exist)
 // =============================================================
 function WebCard({ item }: { item: PortfolioItem }) {
   const isLive = item.status === "live";
+  const images = item.images ?? [];
+  const hasImages = images.length > 0;
+
+  const [idx, setIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  // Auto-advance the slideshow when there are multiple images
+  useEffect(() => {
+    if (!hasImages || images.length <= 1 || paused) return;
+    const t = setInterval(() => {
+      setIdx((i) => (i + 1) % images.length);
+    }, 3500);
+    return () => clearInterval(t);
+  }, [hasImages, images.length, paused]);
 
   return (
     <a
       href={item.href}
       target="_blank"
       rel="noopener noreferrer"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
       className={cn(
         "group relative flex h-full flex-col rounded-2xl border border-border bg-background overflow-hidden transition-all duration-300 hover:border-foreground hover:-translate-y-1 hover:shadow-[0_12px_32px_-12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_12px_32px_-12px_rgba(239,68,68,0.15)]",
       )}
@@ -271,34 +288,80 @@ function WebCard({ item }: { item: PortfolioItem }) {
           item.featured ? "aspect-[16/8]" : "aspect-[4/3]",
         )}
       >
-        <div className="absolute inset-0 bg-grid opacity-40" />
-        <div className="absolute inset-0 grid place-items-center">
-          <span
-            className={cn(
-              "font-medium tracking-[-0.02em] text-foreground/80",
-              item.featured
-                ? "text-5xl md:text-6xl lg:text-7xl"
-                : "text-3xl md:text-4xl",
+        {hasImages ? (
+          <>
+            {/* Slideshow */}
+            <AnimatePresence mode="sync">
+              <motion.div
+                key={`${item.id}-${idx}`}
+                initial={{ opacity: 0, scale: 1.02 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute inset-0"
+              >
+                <Image
+                  src={images[idx]}
+                  alt={`${item.title} screenshot ${idx + 1}`}
+                  fill
+                  sizes={item.featured ? "(max-width: 1024px) 100vw, 60vw" : "(max-width: 1024px) 100vw, 33vw"}
+                  className="object-cover"
+                  priority={false}
+                />
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Soft top vignette so the type + status badges read on any image */}
+            <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/35 to-transparent pointer-events-none" />
+
+            {/* Progress dots (only when multiple images) */}
+            {images.length > 1 && (
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5">
+                {images.map((_, i) => (
+                  <span
+                    key={i}
+                    className={cn(
+                      "h-1 rounded-full transition-all duration-500",
+                      i === idx ? "w-6 bg-white" : "w-1.5 bg-white/40",
+                    )}
+                  />
+                ))}
+              </div>
             )}
-          >
-            {item.title.split(" ")[0]}
-          </span>
-        </div>
+          </>
+        ) : (
+          // Fallback: gradient + first word (building projects without screenshots)
+          <>
+            <div className="absolute inset-0 bg-grid opacity-40" />
+            <div className="absolute inset-0 grid place-items-center">
+              <span
+                className={cn(
+                  "font-medium tracking-[-0.02em] text-foreground/80",
+                  item.featured
+                    ? "text-5xl md:text-6xl lg:text-7xl"
+                    : "text-3xl md:text-4xl",
+                )}
+              >
+                {item.title.split(" ")[0]}
+              </span>
+            </div>
+          </>
+        )}
 
         {/* Type badge top-left */}
-        <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-background/85 backdrop-blur text-foreground border border-border px-2.5 py-1 text-[11px] font-medium">
+        <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-background/85 backdrop-blur text-foreground border border-border px-2.5 py-1 text-[11px] font-medium">
           <Code2 className="size-3" />
           Web
         </span>
 
         {/* Status badge top-right */}
         {isLive ? (
-          <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-success/15 backdrop-blur border border-success/30 px-2.5 py-1 text-[11px] font-medium text-success">
+          <span className="absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-success/15 backdrop-blur border border-success/30 px-2.5 py-1 text-[11px] font-medium text-success">
             <span className="size-1.5 rounded-full bg-success animate-pulse" />
             Live
           </span>
         ) : (
-          <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-background/85 backdrop-blur border border-border-strong px-2.5 py-1 text-[11px] font-medium text-muted">
+          <span className="absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-background/85 backdrop-blur border border-border-strong px-2.5 py-1 text-[11px] font-medium text-muted">
             Building
           </span>
         )}

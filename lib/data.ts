@@ -253,6 +253,9 @@ export type PortfolioItem = {
   // Marketing-specific (future)
   metric?: string;
   metricLabel?: string;
+
+  /** Optional screenshot slideshow images (auto-rotating in WebCard) */
+  images?: string[];
 };
 
 export const portfolio: PortfolioItem[] = [
@@ -279,6 +282,10 @@ export const portfolio: PortfolioItem[] = [
     status: "live",
     description: "Boutique digital marketing studio site. Copy, design, and code, all me.",
     href: "https://growthalis.com",
+    images: [
+      "/portfolio/growthalis-1-homepage.png",
+      "/portfolio/growthalis-2-serp.png",
+    ],
   },
 
   // ─── Regular items ───
@@ -300,6 +307,11 @@ export const portfolio: PortfolioItem[] = [
     status: "live",
     description: "Personal essays on spirituality and self-work.",
     href: "#",
+    images: [
+      "/portfolio/narayani-thoughts-1.png",
+      "/portfolio/narayani-thoughts-2.png",
+      "/portfolio/narayani-thoughts-3.png",
+    ],
   },
   {
     id: "w3",
@@ -319,6 +331,11 @@ export const portfolio: PortfolioItem[] = [
     status: "live",
     description: "Local fitness brand site with class schedule.",
     href: "#",
+    images: [
+      "/portfolio/samz-1.png",
+      "/portfolio/samz-2.png",
+      "/portfolio/samz-3-serp.png",
+    ],
   },
   {
     id: "w4",
@@ -338,6 +355,11 @@ export const portfolio: PortfolioItem[] = [
     status: "live",
     description: "Ecommerce sample for minimal-phone enthusiasts.",
     href: "#",
+    images: [
+      "/portfolio/dumbphones-1.png",
+      "/portfolio/dumbphones-2.png",
+      "/portfolio/dumbphones-3.png",
+    ],
   },
   {
     id: "w5",
