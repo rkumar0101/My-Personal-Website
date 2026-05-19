@@ -788,6 +788,76 @@ export const now = {
 };
 
 // =============================================================
-// ABOUT (long form, optional separate text)
+// ABOUT — long form profile with timeline + facts + languages
 // =============================================================
-export const about = `Started writing in 2020 with no plan. Stuck around because I noticed two things: SaaS companies need writers who understand their product, and most writers do not. Six companies later, I write for HR tech, dev tools, and AI. On the side I build web projects because I trained as a computer science engineer and code stays close. Goal: write things people actually read, ship things people actually use.`;
+export type AboutMilestone = {
+  year: string;
+  company: string;
+  role: string;
+  location: string;
+  note: string;
+};
+
+export type AboutFact = { label: string; value: string };
+export type AboutLanguage = { code: string; name: string; level: string };
+
+export const about = {
+  // Lead paragraphs — story arc (kept short, punchy)
+  story: [
+    "Started writing in 2020 with no plan. I trained as a computer science engineer, taught the basics for a year, did medical billing ops for the rent, then drifted into content because the SERP looked interesting and the pay was honest.",
+    "Stuck around because I noticed two things: SaaS companies need writers who actually understand their product, and most writers do not. The gap is real, and it pays.",
+    "Today I write for HR tech, dev tools, and AI. On the side I build small web projects because the code half of my brain never quite shut up. Goal: write things people read, ship things people use.",
+  ],
+  // Career timeline (in order, latest last for chronological scan)
+  timeline: [
+    {
+      year: "2020 – 21",
+      company: "L.F.E.H",
+      role: "CS Faculty",
+      location: "Kolkata",
+      note: "Taught HTML, CSS, web basics, Google Suite. Learned to explain technical things in simple language.",
+    },
+    {
+      year: "2021",
+      company: "Sun Knowledge",
+      role: "Process Associate",
+      location: "Kolkata",
+      note: "Durable Medical Equipment billing ops via Brightree. Precision under deadline pressure.",
+    },
+    {
+      year: "2021 – 22",
+      company: "Writerz Zone",
+      role: "Content Developer",
+      location: "Remote",
+      note: "First content job. Editorial discipline, research-heavy briefs, deadline rigor.",
+    },
+    {
+      year: "2023 – 24",
+      company: "Geekflare",
+      role: "Technical Content Writer",
+      location: "Remote",
+      note: "Dev tools, APIs, databases, cybersecurity, LLMOps. Sharpened the technical voice.",
+    },
+    {
+      year: "2024 – now",
+      company: "Testlify",
+      role: "B2B SaaS Content Writer",
+      location: "Remote",
+      note: "AI recruiting, online assessments, talent tech. GEO/SEO/AEO playbook in production.",
+    },
+  ] as AboutMilestone[],
+  facts: [
+    { label: "Born", value: "Madhubani, Bihar" },
+    { label: "Based in", value: "Kolkata, WB" },
+    { label: "Education", value: "B.Tech CSE, MAKAUT 2019" },
+    { label: "Writing since", value: "2020" },
+    { label: "Building since", value: "Engineering school" },
+    { label: "Open to", value: "Remote contracts" },
+  ] as AboutFact[],
+  languages: [
+    { code: "EN", name: "English", level: "Read · Write · Speak" },
+    { code: "HI", name: "Hindi", level: "Read · Write · Speak" },
+    { code: "MAI", name: "Maithili", level: "Read · Write · Speak" },
+    { code: "BN", name: "Bengali", level: "Speak" },
+  ] as AboutLanguage[],
+};
