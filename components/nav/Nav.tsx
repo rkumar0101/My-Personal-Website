@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import {
   motion,
   AnimatePresence,
@@ -20,16 +21,35 @@ import { IndiaFlag } from "@/components/ui/IndiaFlag";
 import { site } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
-const NAV_LINKS = [
-  { label: "Portfolio", href: "#portfolio" },
-  { label: "Services", href: "#services" },
-  { label: "Blog", href: "#blog" },
-  { label: "About", href: "#about" },
+// Section anchors on the home page. When the user is on a non-home route
+// (e.g. /blog or /portfolio), prefix with "/" so the link navigates home
+// first and then scrolls to the anchor. Otherwise plain "#anchor" scrolls
+// within the current page.
+const NAV_ANCHORS = [
+  { label: "Portfolio", anchor: "portfolio" },
+  { label: "Services", anchor: "services" },
+  { label: "Blog", anchor: "blog" },
+  { label: "About", anchor: "about" },
 ];
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Resolve anchor + CTA hrefs based on current route.
+  // Home: "#anchor" (smooth scroll within page)
+  // Anywhere else: "/#anchor" (navigate home then scroll)
+  const { navLinks, contactHref } = useMemo(() => {
+    const isHome = pathname === "/";
+    return {
+      navLinks: NAV_ANCHORS.map(({ label, anchor }) => ({
+        label,
+        href: isHome ? `#${anchor}` : `/#${anchor}`,
+      })),
+      contactHref: isHome ? "#contact" : "/#contact",
+    };
+  }, [pathname]);
 
   const { scrollY, scrollYProgress } = useScroll();
   const smoothProgress = useSpring(scrollYProgress, {
@@ -90,7 +110,7 @@ export function Nav() {
         >
           <div className="relative overflow-hidden rounded-2xl border border-border-strong/70 bg-background/80 backdrop-blur-xl shadow-[0_4px_28px_-14px_rgba(0,0,0,0.25)]">
             <ul className="flex items-center gap-0.5 px-1.5 py-1.5">
-              {NAV_LINKS.map((link) => (
+              {navLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
@@ -175,7 +195,7 @@ export function Nav() {
 
           {/* Desktop CTA */}
           <Link
-            href="#contact"
+            href={contactHref}
             className="group/cta hidden md:inline-flex items-center gap-2 rounded-full bg-accent text-accent-foreground h-10 pl-5 pr-2 text-sm font-medium hover:bg-accent/90 transition-all active:scale-[0.98]"
           >
             <span>Get in touch</span>
@@ -217,8 +237,8 @@ export function Nav() {
               onClick={() => setOpen(false)}
               className="flex items-center gap-2 font-medium tracking-tight"
             >
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-foreground text-background font-serif italic">
-                R
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-foreground text-background font-dev font-bold text-lg leading-none pb-0.5">
+                ऋ
               </span>
               <span className="inline-flex items-center gap-1.5 text-sm">
                 <span>
@@ -239,8 +259,8 @@ export function Nav() {
               </button>
             </div>
           </div>
-          <ul className="flex flex-col gap-2 px-5 pt-8">
-            {NAV_LINKS.map((link, i) => (
+          <ul className="flex flex-col px-5 pt-6 divide-y divide-border">
+            {navLinks.map((link, i) => (
               <li
                 key={link.href}
                 style={{ animationDelay: `${i * 60}ms` }}
@@ -249,9 +269,10 @@ export function Nav() {
                 <Link
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="block py-3 text-3xl font-serif italic"
+                  className="group/m flex items-center justify-between py-5 text-2xl md:text-3xl font-medium tracking-tight text-foreground hover:text-accent transition-colors"
                 >
-                  {link.label}
+                  <span>{link.label}</span>
+                  <ArrowUpRight className="size-5 text-muted group-hover/m:text-accent group-hover/m:-translate-y-0.5 group-hover/m:translate-x-0.5 transition-all" />
                 </Link>
               </li>
             ))}
@@ -260,7 +281,7 @@ export function Nav() {
               style={{ animationDelay: "300ms" }}
             >
               <Link
-                href="#contact"
+                href={contactHref}
                 onClick={() => setOpen(false)}
                 className="group/cta inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent text-accent-foreground h-12 px-6 font-medium"
               >
